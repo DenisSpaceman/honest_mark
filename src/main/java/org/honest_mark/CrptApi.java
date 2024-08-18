@@ -2,6 +2,9 @@ package org.honest_mark;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.RateLimiter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -14,12 +17,15 @@ import org.apache.http.impl.client.HttpClients;
 public class CrptApi {
 
     private final String apiURL;
+    private final RateLimiter rateLimiter;
 
-    public CrptApi(String apiURL) {
+    public CrptApi(String apiURL, byte timeUnit, int requestLimit) {
         this.apiURL = apiURL;
+        this.rateLimiter = RateLimiter.create(requestLimit / (timeUnit / 1000.0));
     }
 
     public void getDocument(Object document, String sign){
+        rateLimiter.acquire();
         try (CloseableHttpClient client = HttpClients.createDefault()){
             HttpPost httpPost = new HttpPost(apiURL);
             httpPost.setHeader("Content-Type", "application/json");

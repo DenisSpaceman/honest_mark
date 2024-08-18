@@ -2,12 +2,15 @@ package org.honest_mark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     public static void main(String[] args){
         String apiUrl = "https://ismp.crpt.ru/api/v3/lk/documents/create";
-        CrptApi crptApi = new CrptApi(apiUrl);
+        byte timeUnit = 1;
+        int requstLimit = 10;
+        CrptApi crptApi = new CrptApi(apiUrl, timeUnit, requstLimit);
 
         Description description = new Description("0001000");
         Product product1 = new Product("Cert", "2020-12-12",
